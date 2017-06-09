@@ -25,6 +25,7 @@ and open the template in the editor.
                     <label>Annee</label>
                     <input type="number" ng-model="annee">
                     <input type="button" value="Ajouter" ng-click="ajouter()">
+
                 </form>
             </fieldset>
             {{titre}} <br> {{annee}} 
@@ -42,8 +43,19 @@ and open the template in the editor.
             <option value="20">20</option>
             <option value="25">25</option>
         </select>
+
+        <input type="button" value="<" ng-click="listePrec()">
+        Page {{indicePage + 1}}
+        <input type="button" value=">" ng-click="listeSuiv()">
+
         <table>
-            <tr ng-repeat="f in films|limitTo:taillePage">
+            <thead>
+                <tr>
+                    <th ng-click="trierPar='titre'"><h3>TITRE</h3></th>
+                    <th ng-click="trierPar='annee'"><h3>ANNEE<h3></th>
+                </tr>
+            </thead>
+            <tr ng-repeat="f in films|orderBy:trierPar|limitTo:taillePage:indicePage*taillePage">
                 <td>{{ f.titre | uppercase }}</td>
                 <td>{{ f.annee | uppercase }}</td>
             </tr>
@@ -53,9 +65,10 @@ and open the template in the editor.
                     var app = angular.module('monApp', []);
 
                     app.controller("menuController", ['$scope', '$http', function ($scope, $http) {
-                            
+                            $scope.indicePage = 0;
                             $scope.taillePage = 5;
-                            
+                            $scope.trierPar='';
+
                             $scope.titre = "Votre Titre";
                             $scope.annee = "2015";
 
@@ -79,7 +92,25 @@ and open the template in the editor.
                                 $scope.films.push(objetFilm);
                             };
 
-                        }])
+                            $scope.listePrec = function () {
+                                if ($scope.indicePage-1>0)
+                                {
+                                    $scope.indicePage--;
+                                }
+               
+                            }
+
+                            $scope.listeSuiv = function () {
+                                if (($scope.indicePage + 1) * $scope.taillePage + 1 <= $scope.films.length)
+                                {
+                                    $scope.indicePage++;
+                                }
+
+                            }
+
+
+
+                        }]);
         </script>
 
     </body>
